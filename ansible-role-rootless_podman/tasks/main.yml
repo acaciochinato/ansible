@@ -1,0 +1,10 @@
+---
+# tasks file for ansible-role-rootless_podman
+- name: Create User
+  import_tasks: create-user.yml
+
+- name: Install podman
+  import_tasks: install-podman.yml
+
+- name: Configure podman
+  import_tasks: configure-podman.yml

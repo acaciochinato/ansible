@@ -1,0 +1,9 @@
+- name: "Make sure {{ systemd_user }} user is present"
+  ansible.builtin.user:
+    name: "{{ systemd_user }}"
+    comment: rootless podman user
+    uid: 1901
+    shell: /bin/bash
+    password: "{{ podman_passwd }}"
+    state: present
+  register: user_info

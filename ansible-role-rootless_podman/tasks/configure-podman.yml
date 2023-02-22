@@ -1,0 +1,38 @@
+- name: "{{ systemd_user }} | User prerequisites"
+  block:
+  - name: Create systemd and container user directory
+    ansible.builtin.file:
+      path: "{{ user_info.home }}/{{ item }}"
+      state: directory
+      mode: '0750'
+    loop:
+      - '.config/containers/'
+      - '.config/systemd/user/'
+  
+  - name: Make sure containers.conf is present and configured with default TZ
+    ansible.builtin.copy:
+      dest: "{{ user_info.home }}/.config/containers/containers.conf"
+      content: "{{ timezone }}"
+
+  - name: "Export necessary Variables for {{ systemd_user }}"
+    ansible.builtin.lineinfile:
+      dest: "~/.bashrc"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+    loop:
+      - regexp: "^#?export XDG_RUNTIME_DIR"
+        line: "export XDG_RUNTIME_DIR=\"${XDG_RUNTIME_DIR:-/run/user/$UID}\""
+  
+  - name: "Check if lingering is enabled"
+    ansible.builtin.stat: 
+      path: /var/lib/systemd/linger/podman
+    register: linger
+  become_user: "{{ systemd_user }}"
+  become: true
+  when: systemd_user != "root"
+
+- name: "Make Sure linger support is enabled"    
+  ansible.builtin.command: "loginctl enable-linger {{ systemd_user }}"
+  when: 
+    - not linger.stat.exists
+    - systemd_config.enable_linger | default('yes')

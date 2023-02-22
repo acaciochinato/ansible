@@ -1,0 +1,9 @@
+pckgs:
+  item:
+    - podman
+    - container-selinux
+    - podman-docker
+    - slirp4netns
+    - fuse-overlayfs
+    - python3-pip
+timezone: 'tz = "America/Sao_Paulo"'

@@ -1,0 +1,9 @@
+- name: Make sure needed packages are installed
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ pckgs.item }}"
+
+- name: Make sure podman-compose is present
+  ansible.builtin.pip:
+    name: "podman-compose"
