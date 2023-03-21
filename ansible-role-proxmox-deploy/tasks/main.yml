@@ -1,0 +1,62 @@
+---
+# tasks file for ansible-role-proxmox-deploy
+
+- name: Cloning virtual machine from "{{ VM_template }}" with name "{{ VM_name }}" 
+  proxmox_kvm:
+    api_user : root@pam
+    api_password: "{{ PV_password }}"
+    api_host : "{{ default_proxmox_node }}"
+    name : "{{ VM_name }}"
+    node : "{{ default_proxmox_node }}"
+    clone: "{{ VM_template }}"
+    newid: "{{ VM_id }}"
+    timeout: 500
+
+- name: Waiting
+  wait_for:
+    timeout: 8
+
+- name: Stopping VM If Up
+  proxmox_kvm:
+    api_user : root@pam
+    api_password: "{{ PV_password }}"
+    api_host : "{{ default_proxmox_node }}"
+    vmid: "{{ VM_id }}"
+    node : "{{ default_proxmox_node }}"
+    state: stopped
+
+- name: Loading set up for Virtual Machine. Assigning cores & Memory
+  proxmox_kvm:
+    api_user : root@pam
+    api_password: "{{ PV_password }}"
+    api_host : "{{ default_proxmox_node }}"
+    node : "{{ default_proxmox_node }}"
+    cpu: "host"
+    cores:  "{{ VM_cores }}"
+    memory: "{{ VM_memory }}"
+    vmid: "{{ VM_id }}"
+    bootdisk: scsi0
+    update: true
+
+- name: starting new Virtual Machine in current proxmox node
+  proxmox_kvm:
+    api_user : root@pam
+    api_password: "{{ PV_password }}"
+    api_host : "{{ default_proxmox_node }}"
+    vmid: "{{ VM_id }}"
+    node : "{{ default_proxmox_node }}"
+    state : started
+    timeout: 300
+  when: PV_node  == "none"
+
+- name: starting new Virtual Machine in correct proxmox node
+  proxmox_kvm:
+    api_user : root@pam
+    api_password: "{{ PV_password }}"
+    api_host : "{{ PV_node }}" 
+    vmid: "{{ VM_id }}"
+    node : "{{ PV_node }}"
+    state : started
+    timeout: 300
+    delegate_to: "{{ PV_node }}"
+  when: PV_node != "none"

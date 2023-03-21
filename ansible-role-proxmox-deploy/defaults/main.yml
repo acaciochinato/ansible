@@ -1,0 +1,8 @@
+---
+# defaults file for proxmox_deploy
+PV_password: your_secret_pass
+default_proxmox_node: pve
+default_disk: virtio0
+default_interface: enp8
+default_volume: /dev/vda
+default_partition: 2
