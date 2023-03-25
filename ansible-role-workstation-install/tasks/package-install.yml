@@ -21,17 +21,16 @@
         name: "*"
         state: latest
         update_cache: true
-      when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian'
 
-- name: RPM - Make sure necessary GPG Keys are present
-  ansible.builtin.rpm_key:
-    state: present
-    key: "{{ item }}"
-  loop: "{{ gpg_keys.item }}"
-  when: ansible_os_family == 'Suse'
-
-- name: Suse - Add repo and do a dist-upgrade
+- name: Suse - Add GPG-Keys, repositories and do a dist-upgrade
   block: 
+    - name: Suse - Make sure necessary GPG Keys are present
+      ansible.builtin.rpm_key:
+        state: present
+        key: "{{ item }}"
+      loop: "{{ gpg_keys.item }}"
+    
     - name: Suse - Make sure the needed repos are present
       zypper_repository:
         name: "{{ item.name }}"
@@ -48,7 +47,7 @@
         extra_args: '--allow-vendor-change'
       register: dist_upgrade
   when: ansible_os_family == 'Suse'
-  ignore_errors: true # Had to used it here because somehow the output of the dist-upgrade command returns the stdout hence rc != 0. I'll investigate this further.
+  ignore_errors: true # I Had to used it here because somehow the output of the dist-upgrade command returns the stdout hence rc != 0. I'll investigate this further.
 
 - name: RHEL - Update system and install needed repos
   block:
