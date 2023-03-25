@@ -7,7 +7,7 @@ I created this role to automate the process of configuring my workstations from 
 - Add more repositories to their system (Adjusting the variables in defaults/main.yml)
 - Install some python modules
 - Use Oh-My-ZSH as their default SHELL
-- Have default folders installed on their $HOME path
+- Have default folders created on their $HOME path
 - Use NFS for network sharing
 - Have Logitech's MX Master 3 and wants it configured and ready to be used in their systems
 
