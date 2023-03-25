@@ -1,0 +1,84 @@
+- name: Debian - Import GPG Keys needed and configure Repos
+  block: 
+    - name: Debian - Make sure necessary GPG Keys are present
+      ansible.builtin.get_url:
+        url: "{{ item }}"
+        dest: /etc/apt/trusted.gpg.d/"{{item | basename}}".asc
+        mode: '0644'
+        force: true
+      loop: "{{ gpg_keys.item }}"
+
+    - name: Debian - Make sure needed repos are present
+      ansible.builtin.apt_repository:
+        repo: "{{item.url}}"
+        state: present
+        filename: "{{item.filename}}"
+        update_cache: false
+      loop: "{{repos.item}}"
+
+    - name: Debian - Make sure system is up to date
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+        update_cache: true
+      when: ansible_os_family == 'Debian'
+
+- name: RPM - Make sure necessary GPG Keys are present
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ item }}"
+  loop: "{{ gpg_keys.item }}"
+  when: ansible_os_family == 'Suse'
+
+- name: Suse - Add repo and do a dist-upgrade
+  block: 
+    - name: Suse - Make sure the needed repos are present
+      zypper_repository:
+        name: "{{ item.name }}"
+        repo: "{{ item.repo }}"
+        state: present
+        priority: "{{ item.pr }}"
+        auto_import_keys: yes
+      loop: "{{ repos.item }}"
+  
+    - name: Suse - Perform a dist-upgrade
+      zypper:
+        name: '*'
+        state: dist-upgrade
+        extra_args: '--allow-vendor-change'
+      register: dist_upgrade
+  when: ansible_os_family == 'Suse'
+  ignore_errors: true
+
+- name: RHEL - Update system and install needed repos
+  block:
+    - name: RHEL - Enable Powertools/CRB
+      shell: dnf config-manager --set-enabled crb
+      
+    - name: RHEL - Update system
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+        update_cache: true
+
+    - name: RHEL - Make sure the needed repos are present
+      ansible.builtin.yum_repository:
+        name: "{{ item.name }}"
+        baseurl: "{{ item.repo }}" 
+        description: "{{ item.desc }}" 
+        gpgkey: "{{item.gpg}}"
+        repo_gpgcheck: true
+      loop: "{{ repos.item }}"
+  when: ansible_os_family == 'RedHat'
+
+- name: Installing default Packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ packages.item }}"
+      
+- name: Make sure needed python modules are present
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    executable: "{{pip_exec}}"
+  loop: "{{ py_modules.names }}"

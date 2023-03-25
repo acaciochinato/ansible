@@ -1,0 +1,31 @@
+- name: Make sure Logitops repo is Cloned
+  ansible.builtin.git:
+    repo: "{{logi_repo}}"
+    dest: /opt/logiops
+
+- name: Make sure Build folder is present
+  ansible.builtin.file:
+    path: "{{logi_dir}}"
+    state: directory
+    mode: 0755
+
+- name: Compile Logiops from source
+  ansible.builtin.shell: cmake ../ && make
+  args:
+    chdir: "{{logi_dir}}"
+
+- name: Make sure logid.service and logid files are present
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  loop: "{{ logi_files.item }}"
+
+- name: Make sure logiops systemd unit is started and enable
+  ansible.builtin.systemd:
+    name: logid
+    state: started
+    enabled: yes
+    daemon_reload: yes

@@ -1,0 +1,23 @@
+- name: Create Network Folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  loop: "{{ network_folders.item }}"
+
+- name: Update FSTAB with Network shares
+  ansible.builtin.blockinfile:
+    path: /etc/fstab
+    backup: yes
+    insertafter: EOF
+    block: |
+     {{nfs_shares}}  
+
+- name: Mount NFS Shares
+  ansible.posix.mount:
+    src: "{{ item.name }}"
+    path: "{{ item.path }}"
+    opts: "{{ item.opts }}"
+    state: present
+    fstype: nfs
+  loop: "{{nfs_mount.folders}}"

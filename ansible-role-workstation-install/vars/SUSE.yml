@@ -1,0 +1,51 @@
+# Variables for SUSE based distros
+
+# SUSE needed variables
+suse_distro: "{{ 'openSUSE_Leap_15.4/' if ansible_distribution == 'openSUSE Leap' else 'openSUSE_Tumbleweed/' }}"
+group_name: 'wheel'
+
+# Repos & Packages related
+gpg_keys: 
+  item:
+    - https://packages.microsoft.com/keys/microsoft.asc
+    - https://ftp.gwdg.de/pub/linux/misc/packman/public-keys.asc
+
+repos:
+  item:
+    - { name: 'packman', repo: 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/{{ suse_distro }}', pr: '90' }
+    - { name: 'mozilla', repo: 'https://download.opensuse.org/repositories/mozilla/{{ suse_distro }}', pr: '90' }
+    - { name: 'vscode', repo: 'https://packages.microsoft.com/yumrepos/vscode', pr: '90' }
+
+packages:
+  item:
+   - acl
+   - borgbackup
+   - cmake
+   - code
+   - cryptsetup
+   - curl
+   - firefox
+   - gcc-c++
+   - git
+   - ipcalc
+   - mtr
+   - neofetch
+   - net-tools
+   - nfs-client
+   - nmap
+   - python3
+   - python3-pip
+   - python-nautilus-common-devel
+   - rsync
+   - vagrant
+   - vim
+   - wget
+   - whois
+   - zsh
+   - python3-llfuse
+   - flac
+   - python3-setuptools
+   - libevdev-devel
+   - libconfig-devel
+   - libudev-devel
+   - libconfig++-devel

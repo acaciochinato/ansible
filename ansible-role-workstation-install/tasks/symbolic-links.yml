@@ -1,0 +1,7 @@
+- name: Make sure symbolic links are set
+  ansible.builtin.file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    force: yes
+  loop: "{{symlinks.link}}"

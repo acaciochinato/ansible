@@ -1,0 +1,32 @@
+- name: User {{ item.key }} Configuration
+  become_user: "{{ item.key }}"
+  block:
+    - name: Make sure needed folder's are present
+      ansible.builtin.file:
+        path: "{{ outer_item }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ user_folders.item }}"
+      loop_control:
+        loop_var: outer_item
+
+    - name: Make sure Oh-My-ZSH installation script is present
+      ansible.builtin.get_url:
+        url: "{{ zsh_install_url }}"
+        dest: $HOME
+        owner: "{{ item.key }}"
+        mode: '0755'
+
+    - name: Make sure that ~/.oh-my-zsh and ~/.zshrc Directory and File is not present
+      ansible.builtin.file:
+        path: "{{ outer_item }}"
+        state: absent
+      loop:
+        - "{{ zshrc_file }}"
+        - "{{ zsh_dir }}"
+      loop_control:
+        loop_var: outer_item
+
+    - name: Installing Oh-My-ZSH
+      ansible.builtin.shell:
+        cmd: sh "$HOME"/install.sh --unattended

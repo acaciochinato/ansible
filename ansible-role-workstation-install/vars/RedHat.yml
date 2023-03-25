@@ -1,0 +1,37 @@
+# Variables for RHEL based distros
+
+# Repos & Packages related
+repos:
+  item:
+    - { name: 'vscode', repo: 'https://packages.microsoft.com/yumrepos/vscode', desc: 'VSCode', gpg: 'https://packages.microsoft.com/keys/microsoft.asc' }
+
+packages:
+  item:
+   - acl
+   - cmake
+   - code
+   - cryptsetup
+   - curl
+   - firefox
+   - epel-release
+   - gcc-c++
+   - git
+   - ipcalc
+   - mtr
+   - neofetch
+   - net-tools
+   - nfs-utils
+   - nmap
+   - python3
+   - python3-pip
+   - rsync
+   - vim
+   - wget
+   - whois
+   - zsh
+   - python3-setuptools
+   - libevdev
+   - libconfig-devel
+   - systemd-udev
+   - libevdev
+   - libevdev-devel

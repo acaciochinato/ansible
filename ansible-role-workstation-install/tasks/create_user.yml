@@ -1,0 +1,8 @@
+- name: Create user {{item.key}}
+  ansible.builtin.user:
+    name: "{{ item.key }}"
+    comment: "{{ item.value.comment }}"
+    uid: "{{ item.value.uid }}"
+    shell: "{{ item.value.shell }}"
+    password: "{{ item.value.passwd }}"
+  register: main_user

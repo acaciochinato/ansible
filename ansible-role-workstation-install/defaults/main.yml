@@ -1,0 +1,45 @@
+ansible_python_interpreter: '/usr/bin/python3'
+pip_exec: '/usr/bin/pip3'
+tmp_dir_perm: '0776'
+users:
+  user1:
+    passwd: '$y$j9T$OwaTXt/9chpQwfErTPeUo.$BM5/622nB82Y/z0qnkz8Q1nz7vtt1mjRJIjt.vTqDi5'
+    uid: '1001'
+    comment: 'Test user 1'
+    shell: '/bin/zsh'
+
+py_modules:
+  names:
+    - openpyxl
+    - pyperclip
+    - bs4
+
+# Folders that must be created
+user_folders:
+  item:
+    - '$HOME/Apps'
+    - '$HOME/Sync'
+network_folders:
+  item:
+    - '/srv/storage'
+
+# Packages version and URLS
+zsh_install_url: 'https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh'
+zshrc_file: '$HOME/.zshrc'
+zsh_dir: '$HOME/.oh-my-zsh'
+
+# NFS related configurations and mounts
+nfs_mount:
+  folders:
+   - { name: 'path-to-server:/export/storage', path: '/srv/storage', opts: '_netdev,noauto,rw,async,relatime,hard,proto=tcp,x-systemd.automount,x-systemd.mount-timeout=30,x-systemd.idle-timeout=1min'}
+
+# FSTAB entry to add nfs mounts - Place here the mount configuration for your share
+nfs_shares: "\n#NFS Shares\npath-to-server:/export/storage   /srv/storage    nfs _netdev,noauto,rw,async,relatime,hard,proto=tcp,x-systemd.automount,x-systemd.mount-timeout=30,x-systemd.idle-timeout=1min 0 0"
+
+# Logitech MX
+logi_repo: 'https://github.com/PixlOne/logiops'
+logi_dir: /opt/logiops/build
+logi_files:
+  item:
+    - { src: '/opt/logiops/build/logid.service', dest: '/etc/systemd/system/logid.service', mode: '0644' }
+    - { src: /opt/logiops/build/logid, dest: /usr/local/bin/logid, mode: '755'}  

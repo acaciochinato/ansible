@@ -1,0 +1,21 @@
+- name: Import correct variables 
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ role_path }}/vars/{{ ansible_distribution_file_variety }}.yml"
+
+- name: Make sure default user is present
+  include_tasks: create_user.yml
+  loop: "{{ lookup('dict', users, wantlist=True) }}"
+  
+- name: Make sure necessary repos are present and packages are installed
+  import_tasks: package-install.yml
+
+- name:  Tasks related to Users
+  include_tasks: user_configuration.yml
+  loop: "{{ lookup('dict', users, wantlist=True) }}"
+
+- name: Make sure Network folders are created and fstab entries are set
+  import_tasks: network-folders.yml
+
+- name: Make sure Logiops git repo is present for compiling
+  import_tasks: logitech-mx-master.yml

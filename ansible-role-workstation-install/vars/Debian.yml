@@ -1,0 +1,39 @@
+# Variables for Debian based distros
+group_name: sudo
+gpg_keys: 
+  item:
+    - https://packages.microsoft.com/keys/microsoft.asc
+
+repos:
+  item:
+    - { url: 'deb https://packages.microsoft.com/repos/code stable main', filename: 'vscode'}
+
+packages:
+  item:
+   - apt-transport-https
+   - acl
+   - cmake
+   - cryptsetup
+   - curl
+   - code
+   - firefox-esr
+   - gcc
+   - git
+   - ipcalc
+   - mtr
+   - neofetch
+   - net-tools
+   - nfs-client
+   - nmap
+   - python3
+   - python3-pip
+   - rsync
+   - vim
+   - wget
+   - whois
+   - zsh
+   - python3-setuptools
+   - cmake 
+   - libevdev-dev 
+   - libudev-dev 
+   - libconfig++-dev
