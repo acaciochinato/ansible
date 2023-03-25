@@ -15,9 +15,7 @@ Requirements
 ------------
 
 - Root privileges on the target host
-- RHEL Based distros
-- Debian
-- OpenSUSE Leap/Tumbleweed
+- RHEL Based distros, Debian or OpenSUSE Leap/Tumbleweed
 
 Role Variables
 ------------
