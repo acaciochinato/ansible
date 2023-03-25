@@ -48,7 +48,7 @@
         extra_args: '--allow-vendor-change'
       register: dist_upgrade
   when: ansible_os_family == 'Suse'
-  ignore_errors: true
+  ignore_errors: true # Had to used it here because somehow the output of the dist-upgrade command returns the stdout hence rc != 0. I'll investigate this further.
 
 - name: RHEL - Update system and install needed repos
   block:
