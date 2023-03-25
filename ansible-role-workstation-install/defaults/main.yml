@@ -1,34 +1,38 @@
 ansible_python_interpreter: '/usr/bin/python3'
 pip_exec: '/usr/bin/pip3'
-tmp_dir_perm: '0776'
+
+# User creation definition. You can add how many users you want, just add another dict in the list. 
+# For best security practices this information should be placed in a ansible vault. 
 users:
   user1:
-    passwd: '$y$j9T$OwaTXt/9chpQwfErTPeUo.$BM5/622nB82Y/z0qnkz8Q1nz7vtt1mjRJIjt.vTqDi5'
+    passwd: '$y$j9T$I5egfD5oQsayh0A9L.3jY.$VzEwMw.2xxj9RiXkgqBl5aEuB9psUKy7kT.pBQki.OA'
     uid: '1001'
-    comment: 'Test user 1'
+    comment: 'The password is mypassword'
     shell: '/bin/zsh'
 
+# Python modules needed
 py_modules:
   names:
     - openpyxl
     - pyperclip
     - bs4
 
-# Folders that must be created
+# Users Folders that must be created
 user_folders:
   item:
     - '$HOME/Apps'
     - '$HOME/Sync'
+# Folders that will be used as NFS mount point
 network_folders:
   item:
     - '/srv/storage'
 
-# Packages version and URLS
+# OhMyzsh installation script and files
 zsh_install_url: 'https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh'
 zshrc_file: '$HOME/.zshrc'
 zsh_dir: '$HOME/.oh-my-zsh'
 
-# NFS related configurations and mounts
+# NFS related configurations for mounting
 nfs_mount:
   folders:
    - { name: 'path-to-server:/export/storage', path: '/srv/storage', opts: '_netdev,noauto,rw,async,relatime,hard,proto=tcp,x-systemd.automount,x-systemd.mount-timeout=30,x-systemd.idle-timeout=1min'}
@@ -36,7 +40,7 @@ nfs_mount:
 # FSTAB entry to add nfs mounts - Place here the mount configuration for your share
 nfs_shares: "\n#NFS Shares\npath-to-server:/export/storage   /srv/storage    nfs _netdev,noauto,rw,async,relatime,hard,proto=tcp,x-systemd.automount,x-systemd.mount-timeout=30,x-systemd.idle-timeout=1min 0 0"
 
-# Logitech MX
+# Logitech MX Master 3 configuration
 logi_repo: 'https://github.com/PixlOne/logiops'
 logi_dir: /opt/logiops/build
 logi_files:
