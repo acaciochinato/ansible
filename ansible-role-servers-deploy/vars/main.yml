@@ -1,0 +1,35 @@
+---
+# vars file for ansible-role-rhel-deploy
+GRAYLOG_file: files/graylog/graylog.conf
+
+PKGS:
+  package:
+    - vim
+    - setroubleshoot
+    - wget
+    - firewalld
+    - audit
+    - nfs-utils
+    - rsyslog
+
+FIREWALLD_ports:
+  item:
+    - 10050/tcp
+    - 10051/tcp
+
+ZBX_server: 'zabbix.example.com'
+ZBX_agent:
+  item:
+    - https://repo.zabbix.com/zabbix/4.0/rhel/8/x86_64/zabbix-release-4.0-2.el8.noarch.rpm
+    - zabbix-agent
+
+ZBX_files: 
+      item:
+        - { file: 'templates/zabbix-agent/zabbix_agentd.conf.j2', dest: '/etc/zabbix/zabbix_agentd.conf', mode: '0644'}
+        - { file: 'templates/zabbix-agent/secret.psk.j2', dest: '/etc/zabbix/{{ansible_hostname}}.psk', mode: '0640'}
+  
+ZBX_gpg:
+  item:
+    - https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX
+    - https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-08EFA7DD
+    - https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591-EL5

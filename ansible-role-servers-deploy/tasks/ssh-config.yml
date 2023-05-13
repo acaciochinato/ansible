@@ -1,0 +1,19 @@
+- name: Make sure Passsword Connection for SSH is Disabled
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^.PasswordAuthentication yes'
+    line: 'PasswordAuthentication no'
+  register: ssh_config
+
+- name: Make sure root SSH connection is disabled
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: 'PermitRootLogin no'
+  register: ssh_config_root
+
+- name: Restart sshd daemon 
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+  when: ssh_config.changed or ssh_config_root.changed

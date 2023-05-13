@@ -1,0 +1,28 @@
+- name: Make sure the rules file is present
+  ansible.builtin.copy:
+    src: files/audit/10-default.rules
+    dest: /etc/audit/rules.d/10-default.rules
+  register: auditd_rules_d
+      
+- name: Copy latest auditd.conf 
+  ansible.builtin.copy:
+    src: files/audit/auditd.conf
+    dest: /etc/audit/auditd.conf
+  register: auditd_conf
+ 
+- name: Make sure auditd service is running and enabled
+  service:
+    name: auditd
+    state: started
+    enabled: yes
+                                                                                       
+- name: Reload the new added rules
+  ansible.builtin.command:
+    cmd: augenrules --load
+  when: auditd_rules_d.changed or auditd_conf.changed
+ 
+- name: Restart the auditd daemon if needed
+  ansible.builtin.command:
+    cmd: service auditd restart
+    warn: false
+  when: auditd_rules_d.changed or auditd_conf.changed

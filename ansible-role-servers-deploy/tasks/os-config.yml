@@ -1,0 +1,46 @@
+- name: Make sure OS is Up to date
+  ansible.builtin.package:
+    name: "*"
+    state: latest
+
+- name: Make sure default packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ PKGS.package }}"
+
+- name: Make sure Firewalld is enabled and running
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: true
+    
+- name: Make sure needed ports are open
+  firewalld:
+    zone: public
+    port: "{{ item }}"
+    immediate: true
+    permanent: true
+    state: enabled
+  loop: "{{ FIREWALLD_ports.item}}"
+
+- name: Make sure rsyslog is sending logs to Graylog
+  ansible.builtin.copy:
+    src: "{{ GRAYLOG_file }}"
+    dest: /etc/rsyslog.d
+    owner: root
+    group: root
+    mode: '0644'
+  register: rsyslog
+
+- name: SELinux - Allow rsyslog to access remote syslog server 
+  shell: semanage port -a -t syslogd_port_t -p tcp 1514
+  register: result
+  ignore_errors: true
+  
+- name: Restart rsyslog
+  ansible.builtin.systemd:
+    name: rsyslog
+    state: restarted
+    enabled: true
+  when: rsyslog.changed

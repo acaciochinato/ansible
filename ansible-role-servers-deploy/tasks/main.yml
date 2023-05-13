@@ -1,0 +1,17 @@
+---
+# tasks file for ansible-role-servers-deploy
+- name: Set Hostname
+  ansible.builtin.hostname:
+    name: "{{ hostname }}"
+ 
+- name: Base OS Configuration
+  import_tasks: os-config.yml
+
+- name: Audit Best Practice Configuration
+  import_tasks: audit.yml
+
+- name: Configure SSH 
+  import_tasks: ssh-config.yml
+
+- name: Configure Zabbix Agent
+  import_tasks: configure-zabbix-agent.yml

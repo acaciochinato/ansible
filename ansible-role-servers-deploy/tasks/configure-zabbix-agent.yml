@@ -1,0 +1,40 @@
+- name: Import Zabbix GPG key from a url
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ item }}"
+  loop: "{{ ZBX_gpg.item }}"
+
+- name: Make sure Zabbix repo and Zabbix Agent are present
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ ZBX_agent.item }}"
+
+- name: Generate {{ansible_hostname}}.psk
+  shell: openssl rand -hex 32
+  register: secret_psk
+
+- name: Copy the template of zabbix_agent.conf & {{ansible_hostname}}.psk
+  ansible.builtin.template:
+    src: "{{ item.file }}"
+    dest: "{{ item.dest }}"
+    owner: zabbix
+    group: zabbix
+    mode: "{{ item.mode }}"
+  loop: "{{ZBX_files.item}}"
+    
+- name: Gather Hostname and psk string
+  ansible.builtin.set_fact:
+    host_psk:
+      psk: "{{secret_psk.stdout}}"
+
+- name: Make sure Zabbix-agent is enabled and running
+  ansible.builtin.systemd:
+    name: zabbix-agent
+    state: restarted
+    enabled: true
+
+- name: Print Host and respective PSK values
+  debug:
+    msg: "{{ansible_hostname}}.psk: {{host_psk.psk}}"
+  loop: "{{ ansible_play_hosts }}"
