@@ -1,5 +1,5 @@
 ---
-# vars file for ansible-role-rhel-deploy
+# vars file for ansible-role-servers-deploy
 GRAYLOG_file: files/graylog/graylog.conf
 
 PKGS:
