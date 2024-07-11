@@ -1,7 +1,7 @@
 workstation_install
 =========
 
-I created this role to automate the process of configuring my workstations from a fresh RHEL/Debian/openSUSE installation. In my original (and personal) role I have more tasks personalized to my own use. So this repo only contains the tasks that (to me) makes sense for everyone who's after their Fresh OS Install wants to:
+I created this role to automate the process of configuring my workstations from a fresh RHEL/Debian/openSUSE installation. In my original (and personal) role I have more tasks personalized to my own use. So, what this role do:
 
 - Add one or more users to the system
 - Add more repositories to their system (Adjusting the variables in defaults/main.yml)
@@ -9,7 +9,7 @@ I created this role to automate the process of configuring my workstations from 
 - Use Oh-My-ZSH as their default SHELL
 - Have default folders created on their $HOME path
 - Use NFS for network sharing
-- Have Logitech's MX Master 3 and wants it configured and ready to be used in their systems
+- Configure Logitech MX Master 3 mouse
 
 Requirements
 ------------
